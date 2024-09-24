@@ -1,4 +1,3 @@
-
 # azure-pipelines.yml
 trigger:
   branches:
@@ -69,8 +68,11 @@ jobs:
       - script: |
           cd EmployeeCrudAngular
           npm install
-          npm run build -- --prod
+          npm run build
         displayName: 'Install Dependencies and Build Frontend'
 
-      - publish: 'EmployeeCrudAngular/dist'
+      - script: dir EmployeeCrudAngular\dist
+        displayName: 'List Frontend Dist Directory'
+
+      - publish: 'EmployeeCrudAngular/dist/EmployeeCrudAngular'  # Ajusta esta ruta si es necesario
         artifact: frontend
