@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { CommonModule } from '@angular/common';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 @Component({
   selector: 'app-employee',
   standalone: true,

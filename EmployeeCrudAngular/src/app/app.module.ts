@@ -7,25 +7,29 @@ import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common'; // Importar DatePipe y registerLocaleData
 import { FormsModule } from "@angular/forms";
 import { AddemployeeComponent } from './addemployee/addemployee.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    EmployeeComponent,
-    AddemployeeComponent
-  ],
+  // declarations: [
+  //   AppComponent,
+  //   EmployeeComponent,
+  //   AddemployeeComponent
+  // ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule, // Necesario para las animaciones de Toastr
+    ToastrModule.forRoot(),
   ],
   providers: [
     DatePipe
   ],
-  bootstrap: [AppComponent]
+ // bootstrap: [AppComponent]
 })
 export class AppModule { }

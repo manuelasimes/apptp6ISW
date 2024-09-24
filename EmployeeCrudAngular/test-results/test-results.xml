@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<testsuite name="Chrome Headless 128.0.0.0 (Windows 10)" package="" timestamp="2024-09-20T15:37:22" id="0" hostname="PCmanuela" tests="4" errors="1" failures="0" time="0.243">
+  <properties>
+    <property name="browser.fullName" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/128.0.0.0 Safari/537.36"/>
+  </properties>
+  <testcase name="AddemployeeComponent should create" time="0.161" classname="AddemployeeComponent"/>
+  <testcase name="EmployeeComponent should create" time="0.058" classname="EmployeeComponent"/>
+  <testcase name="AppComponent should render title" time="0.014" classname="AppComponent"/>
+  <testcase name="EmployeeService should retrieve all employees" time="0.01" classname="EmployeeService"/>
+  <system-out>
+    <![CDATA[Chrome Headless 128.0.0.0 (Windows 10) ERROR
+  An error was thrown in afterAll
+  Error: NG02100: InvalidPipeArgument: 'Unable to convert "20/09/2024 12:37:22" into a date' for pipe 'DatePipe'
+  error properties: Object({ code: 2100 })
+      at invalidPipeArgumentError (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/common/fesm2022/common.mjs:4053:12)
+      at DatePipe.transform (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/common/fesm2022/common.mjs:4527:19)
+      at map (http://localhost:9876/_karma_webpack_/webpack:/src/app/employee.service.ts:29:20)
+      at Array.map (<anonymous>)
+      at call (http://localhost:9876/_karma_webpack_/webpack:/src/app/employee.service.ts:23:16)
+      at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:37)
+      at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+      at OperatorSubscriber.next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:31:18)
+      at onNext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/map.js:7:24)
+      at OperatorSubscriber._next (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/operators/OperatorSubscriber.js:13:21)
+
+]]>
+  </system-out>
+  <system-err/>
+</testsuite>
