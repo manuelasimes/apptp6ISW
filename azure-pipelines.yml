@@ -10,8 +10,8 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '7.0.x'  # Ajusta según la versión de .NET Core que uses
-
+    version: '8.0.x'  # Ajusta según la versión de .NET Core que uses
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
