@@ -10,7 +10,7 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '7.x.x'  # Ajusta según la versión de .NET Core que uses
+    version: '7.0.x'  # Ajusta según la versión de .NET Core que uses
 
 - task: DotNetCoreCLI@2
   inputs:
