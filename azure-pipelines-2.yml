@@ -62,7 +62,7 @@ jobs:
     steps:
       - task: NodeTool@0
         inputs:
-          versionSpec: '18.x'  # O la versión de Node.js que estés utilizando
+          versionSpec: '18.x'
           checkLatest: true
 
       - script: |
@@ -71,12 +71,17 @@ jobs:
           npm run build --prod
         displayName: 'Install Dependencies and Build Frontend'
 
-      # Verificar si la carpeta dist se ha generado correctamente
+      # Comprobar si el directorio dist existe
       - script: |
-          echo "Contents of EmployeeCrudAngular/dist:"
-          dir EmployeeCrudAngular/dist
+          if exist EmployeeCrudAngular\dist (
+            echo "Dist directory found!"
+            dir EmployeeCrudAngular\dist
+          ) else (
+            echo "Dist directory not found!"
+            exit /b 1
+          )
         displayName: 'Verify dist Directory Exists'
 
       # Publicar el artefacto del frontend
-      - publish: 'EmployeeCrudAngular/dist/EmployeeCrudAngular'  # Ajusta esta ruta si es necesario
+      - publish: 'EmployeeCrudAngular/dist/EmployeeCrudAngular'
         artifact: frontend
