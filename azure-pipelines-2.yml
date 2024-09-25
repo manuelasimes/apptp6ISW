@@ -73,14 +73,14 @@ jobs:
 
       # Comprobar si el directorio dist existe
       - script: |
-          if exist EmployeeCrudAngular\dist (
-            echo "Dist directory found!"
-            dir EmployeeCrudAngular\dist
+          if exist EmployeeCrudAngular\dist\EmployeeCrudAngular (
+           echo "Dist directory found!"
+           dir EmployeeCrudAngular\dist\EmployeeCrudAngular
           ) else (
             echo "Dist directory not found!"
             exit /b 1
           )
-        displayName: 'Verify dist Directory Exists'
+
 
       # Publicar el artefacto del frontend
       - publish: 'EmployeeCrudAngular/dist/EmployeeCrudAngular'
