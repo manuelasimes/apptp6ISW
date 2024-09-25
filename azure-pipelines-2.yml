@@ -68,7 +68,7 @@ jobs:
       - script: |
           cd EmployeeCrudAngular
           npm install
-          npm run build
+          npm run build --prod
         displayName: 'Install Dependencies and Build Frontend'
 
       - script: dir EmployeeCrudAngular\dist
