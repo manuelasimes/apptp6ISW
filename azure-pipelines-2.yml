@@ -68,14 +68,13 @@ jobs:
       - script: |
           cd EmployeeCrudAngular
           npm install
-          npm run build --prod
+          npm run build --configuration production
         displayName: 'Install Dependencies and Build Frontend'
 
-      # Comprobar si el directorio dist existe
       - script: |
-          if exist EmployeeCrudAngular\dist\EmployeeCrudAngular (
-           echo "Dist directory found!"
-           dir EmployeeCrudAngular\dist\EmployeeCrudAngular
+          if exist EmployeeCrudAngular\dist\employee-crud-angular (
+            echo "Dist directory found!"
+            dir EmployeeCrudAngular\dist\employee-crud-angular
           ) else (
             echo "Dist directory not found!"
             exit /b 1
