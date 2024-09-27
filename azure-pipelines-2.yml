@@ -12,7 +12,7 @@ variables:
   buildConfiguration: "Release"
   backAppName: "EMployeeCrudApiQA"
   frontAppName: "EmployeeCrudAngularQA"
-  azureSubs: "5a41a07b-1098-4134-955e-ed2807419508"
+  azureSubs: "Azure"
   #sonarCloudSubs: "SonarCloud"
   #sonarCloudOrg: "mateonegri"
   #sonarCloudProjectKey: "mateonegri_tp-06"
