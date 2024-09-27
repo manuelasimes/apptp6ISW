@@ -34,6 +34,11 @@ stages:
       steps:
       - checkout: self
         fetchDepth: 0
+      - task: UseDotNet@2  # Agregar este paso para usar .NET 8
+        inputs:
+          packageType: 'sdk'
+          version: '8.x'  # Asegúrate de que sea .NET 8
+          installationPath: $(Agent.ToolsDirectory)/dotnet
       - task: DotNetCoreCLI@2
         displayName: 'Restaurar paquetes NuGet'
         inputs:
