@@ -27,7 +27,7 @@ stages:
       pool:
         vmImage: 'windows-latest'
       variables:
-        solution: '/*.sln'
+        solution: './EmployeeCrudApi/*.sln'  # Ajustar según la ubicación real de tu solución
         buildPlatform: 'Any CPU'
         buildConfiguration: 'Release'
       
