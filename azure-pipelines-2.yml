@@ -43,7 +43,7 @@ stages:
         displayName: 'Ejecutar pruebas de la API'
         inputs:
           command: 'test'
-          projects: '/*.Tests.csproj'
+          projects: './EmployeeCrudApi/*.csproj'
           arguments: '--collect:"XPlat Code Coverage"'
       - task: PublishCodeCoverageResults@2
         inputs:
