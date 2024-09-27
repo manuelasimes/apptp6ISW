@@ -1,86 +1,196 @@
-# azure-pipelines.yml
 trigger:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - EmployeeCrudApi/**
-      - EmployeeCrudAngular/**
+- main
 
 pool:
   vmImage: 'windows-latest'
 
-jobs:
-  - job: BuildBackend
-    displayName: 'Build Backend'
-    steps:
-      - task: UseDotNet@2
-        inputs:
-          packageType: 'sdk'
-          version: '8.0.x'
-          installationPath: $(Agent.ToolsDirectory)/dotnet
+variables:
+  nodeVersion: "18.19.0"
+  frontPath: "./EmployeeCrudAngular"
+  backPath: "./EmployeeCrudApi"
+  solution: "/*.sln"
+  buildConfiguration: "Release"
+  backAppName: "EMployeeCrudApiQA"
+  frontAppName: "EmployeeCrudAngularQA"
+  azureSubs: "5a41a07b-1098-4134-955e-ed2807419508"
+  #sonarCloudSubs: "SonarCloud"
+  #sonarCloudOrg: "mateonegri"
+  #sonarCloudProjectKey: "mateonegri_tp-06"
+  #sonarCloudProjectName: "tp-06"
 
+stages:
+- stage: Build 
+  displayName: "Build Back-End and Front-End"
+  jobs:
+    - job: build_backend
+      displayName: 'Build Backend'
+      pool:
+        vmImage: 'windows-latest'
+      variables:
+        solution: '/*.sln'
+        buildPlatform: 'Any CPU'
+        buildConfiguration: 'Release'
+      
+      steps:
+      - checkout: self
+        fetchDepth: 0
       - task: DotNetCoreCLI@2
-        displayName: 'Restore Backend Dependencies'
+        displayName: 'Restaurar paquetes NuGet'
         inputs:
-          command: 'restore'
-          projects: '**/*.csproj'
-
+          command: restore
+          projects: '$(solution)'
       - task: DotNetCoreCLI@2
-        displayName: 'Build Backend'
-        inputs:
-          command: 'build'
-          projects: '**/*.csproj'
-          arguments: '--configuration Release'
-
-      - task: DotNetCoreCLI@2
-        displayName: 'Run API Tests'
+        displayName: 'Ejecutar pruebas de la API'
         inputs:
           command: 'test'
-          projects: '**/*.Tests.csproj'
+          projects: '/*.Tests.csproj'
           arguments: '--collect:"XPlat Code Coverage"'
-
       - task: PublishCodeCoverageResults@2
-        displayName: 'Publish Backend Code Coverage Results'
         inputs:
-          summaryFileLocation: '$(Agent.TempDirectory)/**/*.cobertura.xml'
+          summaryFileLocation: '$(Agent.TempDirectory)//*.cobertura.xml'
           failIfCoverageEmpty: false
-
+        displayName: 'Publicar resultados de code coverage del back-end'
+      #- task: SonarCloudPrepare@2
+        #inputs:
+         # SonarCloud: $(sonarCloudSubs)
+          #organization: $(sonarCloudOrg)
+          #scannerMode: 'MSBuild'
+          #projectKey: $(sonarCloudProjectKey)
+          #projectName: $(sonarCloudProjectName)
       - task: DotNetCoreCLI@2
-        displayName: 'Publish Backend'
+        displayName: 'Compilar la solución'
         inputs:
-          command: 'publish'
-          projects: '**/*.csproj'
-          arguments: '--configuration Release --output $(Build.ArtifactStagingDirectory)/backend'
-    
-      - publish: $(Build.ArtifactStagingDirectory)/backend
-        artifact: backend
-
-  - job: BuildFrontend
-    displayName: 'Build Frontend'
-    steps:
+          command: build
+          projects: '$(solution)'
+          arguments: '--configuration $(buildConfiguration)'
+      #- task: SonarCloudAnalyze@2
+       # inputs:
+        #  jdkversion: 'JAVA_HOME_17_X64'
+      #- task: SonarCloudPublish@2
+       # inputs:
+        #  pollingTimeoutSec: '300'
+      - task: DotNetCoreCLI@2
+        displayName: 'Publicar aplicación'
+        inputs:
+          command: publish
+          publishWebProjects: True
+          arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          zipAfterPublish: true
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publicar artefactos de compilación'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'backend-drop'
+          publishLocation: 'Container'
+        
+    - job: build_frontend
+      displayName: 'Build Frontend'
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+      - checkout: self
+        fetchDepth: 0
+     # - task: SonarCloudPrepare@2
+      #  inputs:
+       #   SonarCloud: 'SonarCloud'
+        #  organization: 'mateonegri'
+         # scannerMode: 'CLI'
+          #configMode: 'manual'
+         # cliprojectKey: 'mateonegri_tp-06'
+          #cliprojectName: 'tp-06'
+          #cliSources: '.'
       - task: NodeTool@0
         inputs:
           versionSpec: '18.x'
-          checkLatest: true
+        displayName: 'Install Node.js 18.x'
+      # Step to install Angular CLI
+      - script: npm install @angular/cli@latest
+        displayName: 'Install Angular CLI in EmployeeCrudAngular'
+        workingDirectory: 'EmployeeCrudAngular'
+      # Step to install dependencies
+      - script: npm install
+        displayName: 'npm install in EmployeeCrudAngular'
+        workingDirectory: 'EmployeeCrudAngular'
+      #- task: Cache@2
+      #  inputs:
+      #    key: 'npm | "$(Agent.OS)" | $(frontPath)/package-lock.json'
+      #    path: "$(frontPath)/node_modules"
+      #    restoreKeys: |
+      #      npm | "$(Agent.OS)"
+      #  displayName: "Cache dependences"
+      - script: npx ng test --karma-config=karma.conf.js --watch=false --browsers ChromeHeadless --code-coverage
+        displayName: 'Ejecutar pruebas del front'
+        workingDirectory: 'EmployeeCrudAngular'
+        continueOnError: true  # Para que el pipeline continúe aunque falle
+      - task: PublishCodeCoverageResults@2
+        inputs:
+          summaryFileLocation: 'EmployeeCrudAngular/coverage/lcov.info'
+          failIfCoverageEmpty: false
+        condition: always()  # Esto asegura que se ejecute siempre
+        displayName: 'Publicar resultados de code coverage del front'  
+      
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'EmployeeCrudAngular/test-results/test-results.xml'
+          failTaskOnFailedTests: true
+        condition: always()  # Esto asegura que se ejecute siempre
+        displayName: 'Publicar resultados de pruebas unitarias del front'
+      # Step to build the Angular app
+      - script: npm run build
+        displayName: 'Build Angular App in EmployeeCrudAngular'
+        workingDirectory: 'EmployeeCrudAngular'
+      
+ # - task: SonarCloudAnalyze@2
+  #    - task: SonarCloudPublish@2
+   #     inputs:
+    #      pollingTimeoutSec: '300'
+      # Publish the dist folder as a pipeline artifact
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Front-End Artifacts"
+        inputs:
+          PathtoPublish: "$(frontPath)/dist"
+          ArtifactName: "frontend-drop"
+          publishLocation: "Container"
 
-      - script: |
-          cd EmployeeCrudAngular
-          npm install
-          npm run build --configuration production
-        displayName: 'Install Dependencies and Build Frontend'
+- stage: DeployToQA
+  displayName: "Deploy to QA"
+  dependsOn: [Build]
+  jobs:
+    - job: DeployBackToQA
+      displayName: "Deploy Back-End to QA Environment"
+      steps:
+        - task: DownloadPipelineArtifact@2
+          displayName: "Download Back-End Artifacts"
+          inputs:
+            buildType: "current"
+            artifactName: "backend-drop"
+            targetPath: "$(Pipeline.Workspace)/backend-drop"
 
-      - script: |
-          if exist EmployeeCrudAngular\dist\employee-crud-angular (
-            echo "Dist directory found!"
-            dir EmployeeCrudAngular\dist\employee-crud-angular
-          ) else (
-            echo "Dist directory not found!"
-            exit /b 1
-          )
+        - task: AzureWebApp@1
+          displayName: "Deploy Back-End Artifacts"
+          inputs:
+            azureSubscription: "$(azureSubs)"
+            appType: "webApp"
+            appName: "$(backAppName)"
+            package: "$(Pipeline.Workspace)/backend-drop/*.zip"
+            deploymentMethod: "auto"
 
+    - job: DeployFrontToQA
+      displayName: "Deploy Front-End to QA Environment"
+      steps:
+        - task: DownloadPipelineArtifact@2
+          displayName: "Download Front-End Artifacts"
+          inputs:
+            buildType: "current"
+            artifactName: "frontend-drop"
+            targetPath: "$(Pipeline.Workspace)/frontend-drop"
 
-      # Publicar el artefacto del frontend
-      - publish: 'EmployeeCrudAngular/dist/EmployeeCrudAngular'
-        artifact: frontend
+        - task: AzureWebApp@1
+          displayName: "Deploy Front-End Artifacts"
+          inputs:
+            azureSubscription: "$(azureSubs)"
+            appType: "webApp"
+            appName: "$(frontAppName)"
+            package: "$(Pipeline.Workspace)/frontend-drop/employee-crud-angular/browser"
+            deploymentMethod: auto
