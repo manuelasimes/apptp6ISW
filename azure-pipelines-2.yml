@@ -39,6 +39,11 @@ stages:
           packageType: 'sdk'
           version: '8.x'  # Asegúrate de que sea .NET 8
           installationPath: $(Agent.ToolsDirectory)/dotnet
+  # Agregar un script para imprimir el valor de la variable solution
+      - script: |
+          echo "Logging the solution path:"
+          echo "Solution path: $(solution)"
+        displayName: 'Log solution path'
       - task: DotNetCoreCLI@2
         displayName: 'Restaurar paquetes NuGet'
         inputs:
