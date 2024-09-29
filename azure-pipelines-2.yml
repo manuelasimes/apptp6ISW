@@ -42,7 +42,7 @@ stages:
   # Agregar un script para imprimir el valor de la variable solution
       - script: |
           echo "Logging the solution path:"
-          echo "Solution path: $(solution)"
+          echo "Solution path: $("./EmployeeCrudApi/EmployeeCrudApi.sln")"
         displayName: 'Log solution path'
       - task: DotNetCoreCLI@2
         displayName: 'Restaurar paquetes NuGet'
