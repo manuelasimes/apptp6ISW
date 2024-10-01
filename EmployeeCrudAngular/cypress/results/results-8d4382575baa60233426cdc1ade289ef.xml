@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="6.215" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2024-09-30T19:31:03" tests="0" file="cypress\e2e\2-advanced-examples\viewport.cy.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Viewport" timestamp="2024-09-30T19:31:03" tests="1" time="6.206" failures="0">
+    <testcase name="Viewport cy.viewport() - set the viewport size and dimension" time="3.904" classname="cy.viewport() - set the viewport size and dimension">
+    </testcase>
+  </testsuite>
+</testsuites>
